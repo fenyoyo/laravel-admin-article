@@ -13,6 +13,7 @@ use Intop\Article\Models\Category;
 class ArticleController extends AdminController
 {
 
+    protected $title = '文章管理';
     /**
      * Make a grid builder.
      *
@@ -25,20 +26,18 @@ class ArticleController extends AdminController
             $grid->model()->orderBy('id', 'desc');
 
             $grid->column('id')->sortable();
-            $grid->column('title')->limit(10);
-            $grid->column('summary')->limit(10);
-            $grid->column('category.title', admin_trans('article.fields.category_title'))->filter();
-            $grid->column('type')->using(ArticleTypeEnum::options())->filter(Grid\Column\Filter\In::make(ArticleTypeEnum::options()));
-            $grid->column('order')->orderable();
-            $grid->column('created_at');
-            $grid->column('order')->sortable();
-//            $grid->setResource('/article');
+            $grid->column('title', '标题')->limit(10);
+            $grid->column('summary', '副标题')->limit(10);
+            $grid->column('category.title', '分类名称')->filter();
+            $grid->column('type', '文章类型')->using(ArticleTypeEnum::options())->filter(Grid\Column\Filter\In::make(ArticleTypeEnum::options()));
+            $grid->column('order', '排序')->orderable();
+            $grid->column('created_at', '创建时间');
 
             $grid->filter(function (Grid\Filter $filter) {
                 $filter->panel();
                 $filter->expand();
-                $filter->equal('id')->width(2);
-                $filter->like('title')->width(3);
+                $filter->equal('id', 'ID')->width(2);
+                $filter->like('title', '标题')->width(3);
             });
             $grid->showViewButton(false);
         });
@@ -48,29 +47,29 @@ class ArticleController extends AdminController
     {
         return Form::make(new Article, function (Form $form) {
             $form->display('id');
-            $form->select('category_id')
+            $form->select('category_id', '分类')
                 ->required()
                 ->placeholder('请选择')->options(function () {
                     return Category::selectOptions();
                 })->saving(function ($v) {
                     return (int)$v;
                 });
-            $form->text('title')->required();
-            $form->text('summary');
-            $form->image('cover')->autoUpload()->uniqueName();
-            $form->radio('type')->options(ArticleTypeEnum::options())
+            $form->text('title', '标题')->required();
+            $form->text('summary', '副标题');
+            $form->image('cover', '封面')->autoUpload()->uniqueName();
+            $form->radio('type', '类型')->options(ArticleTypeEnum::options())
                 ->default('article')
                 ->when('article', function (Form $form) {
-                    $form->editor('content')->options($this->editorOptions());
+                    $form->editor('content', '文章内容')->options($this->editorOptions());
                 })->when(['url', 'out_url'], function (Form $form) {
-                    $form->text('url');
+                    $form->text('url', '链接')->help('内部链接请输入相对路径,外部链接请输入绝对路径');
                 })->when('attachment', function (Form $form) {
-                    $form->file('attachment')->maxSize(300 * 1024)->chunked()->autoUpload();
+                    $form->file('attachment', '附件')->maxSize(300 * 1024)->chunked()->autoUpload();
                 });
-            $form->text('author');
-            $form->number('order');
-            $form->datetime('created_at')->default(now());
-            $form->display('updated_at');
+            $form->text('author', '作者');
+            $form->number('order', '排序');
+            $form->datetime('created_at', '创建时间')->default(now());
+            $form->display('updated_at', '编辑时间');
         });
     }
 

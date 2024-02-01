@@ -1,7 +1,8 @@
 {
   "name": "intop/laravel-admin-article",
+  "alias": "文章插件",
   "version": "1.0.0",
-  "description": "Config extension for laravel-admin",
+  "description": "适用与dcat的文章拓展",
   "type": "library",
   "license": "MIT",
   "require": {
