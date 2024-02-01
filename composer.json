@@ -1,0 +1,24 @@
+{
+  "name": "intop/laravel-admin-article",
+  "version": "1.0.0",
+  "description": "Config extension for laravel-admin",
+  "type": "library",
+  "license": "MIT",
+  "require": {
+    "php": ">=8.0.0",
+    "laravel/framework": ">=9.0",
+    "dcat/laravel-admin": ">=2.2.3-beta"
+  },
+  "autoload": {
+    "psr-4": {
+      "Intop\\Article\\": "src/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Intop\\Article\\ArticleServiceProvider"
+      ]
+    }
+  }
+}
